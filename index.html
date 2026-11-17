@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kávéfajták</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script src="coffees.js"></script>
+</head>
+<body>
+
+    <div class="container is-max-desktop">
+        <h1 class="title">Kávéfajták</h1>
+        <h2 class="subtitle">Melyik a te kedvenced?</h2>
+        <div class="block">
+            <div class="select">
+                <select id="coffees-select" onchange="renderDetails(this)">
+                    <option value="0">válassz...</option>
+                </select>
+            </div>
+        </div>
+        <div class="block details"></div>
+    </div>
+
+    <script>
+        function createOptionsString(arr) {
+            return arr.map(obj => `<option value="${obj.id}">${obj.title}</option>`).join("");
+        }
+
+        document.getElementById('coffees-select').innerHTML += createOptionsString(coffees);
+
+        function renderDetails(domObj) {
+            const id = +domObj.value;
+            if (id == 0) {
+                document.querySelector('.details').innerHTML = "";
+                return;
+            }
+            const selectedCoffee = coffees.find(obj => obj.id == id);
+            console.log(selectedCoffee);
+            document.querySelector('.details').innerHTML = createCardString(selectedCoffee);
+        }
+
+        function createCardString(obj) {
+            return `
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image is-3by4">
+                        <img src="./images/${obj.image}" alt="${obj.title}"/>
+                    </figure>
+                </div>
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">${obj.title}</p>
+                            <p class="subtitle is-6">${obj.type}</p>
+                        </div>
+                    </div>
+                    <div class="content">${obj.description}</div>
+                    <div class="block spanTags">
+                        <span class="tag is-warning is-light">Ár: ${obj.price} Ft</span>
+                        <span>Értékelés: ${renderRating(obj.rating)}</span>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderRating(nr) {
+            const r = Math.round(nr);
+            return `
+            <span> ${'<i class="fa-solid fa-star"></i>'.repeat(r)} </span>
+            <span> ${'<i class="fa-regular fa-star"></i>'.repeat(5 - r)} </span>
+            `;
+        }
+    </script>
+
+</body>
+</html>
